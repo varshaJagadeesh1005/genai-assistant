@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GenAI Assistant - A modern, high-performance, and beautifully designed AI workspace. Interact with state-of-the-art LLMs.">
+    <title>GenAI Assistant Workspace</title>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons for high-fidelity visuals -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-base: #07080e;
+            --bg-surface: #0f111a;
+            --bg-card: rgba(22, 25, 41, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --primary-hover: #4f46e5;
+            
+            --secondary: #ec4899;
+            --secondary-glow: rgba(236, 72, 153, 0.3);
+            
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dark: #6b7280;
+            
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.06) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        /* Ambient glowing dots */
+        .ambient-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-glow);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: -1;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 2.5rem;
+            background: rgba(15, 17, 26, 0.5);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #fff 40%, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-dark);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        .status-dot.online {
+            background-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            backdrop-filter: blur(16px);
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* Config Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,0.1);
+            transition: .4s;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Chat Workspace Styling */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            height: calc(100vh - 160px);
+            min-height: 500px;
+            backdrop-filter: blur(16px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 17, 26, 0.3);
+        }
+
+        .chat-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-icon-wrapper {
+            width: 36px;
+            height: 36px;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .chat-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            scroll-behavior: smooth;
+        }
+
+        /* Message Bubbles styling */
+        .message {
+            display: flex;
+            gap: 1rem;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--secondary), #d946ef);
+            color: white;
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.2);
+        }
+
+        .message.assistant .message-avatar {
+            background: rgba(255,255,255,0.06);
+            color: var(--primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: var(--primary);
+            border: none;
+            border-radius: var(--radius-md) 0 var(--radius-md) var(--radius-md);
+            color: #white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .message.assistant .message-content {
+            border-radius: 0 var(--radius-md) var(--radius-md) var(--radius-md);
+        }
+
+        /* Preformatted Code block support in markdown output */
+        .message-content pre {
+            background: #07080e !important;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            margin: 0.75rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.85rem;
+        }
+
+        .message-content code {
+            font-family: 'Space Grotesk', monospace;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .message-content p {
+            margin-bottom: 0.5rem;
+        }
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Loader Animation */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 0;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background-color: var(--text-muted);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+
+        /* Chat Input Field Styling */
+        .chat-input-area {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(15, 17, 26, 0.5);
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input {
+            width: 100%;
+            background: rgba(7, 8, 14, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #fff;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.15), inset 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-dark);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 12px var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .send-btn:disabled {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Scrollbar customizing */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Responsive breakpoints */
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            header {
+                padding: 1rem 1.5rem;
+            }
+            .chat-container {
+                height: calc(100vh - 250px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">
+                <i data-lucide="bot" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div>
+                <h1 class="logo-text">GenAI Assistant</h1>
+            </div>
+        </div>
+        <div class="status-badge" id="system-status-badge">
+            <span class="status-dot" id="system-status-dot"></span>
+            <span id="system-status-text">Connecting...</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sidebar Workspace Details -->
+        <section class="sidebar" aria-label="Sidebar details">
+            <div class="card">
+                <h2 class="card-title">
+                    <i data-lucide="cpu" style="width: 18px; color: var(--primary);"></i>
+                    System Config
+                </h2>
+                <div class="info-item">
+                    <span class="info-label">Active Provider</span>
+                    <span class="info-value" id="active-provider-val">Detecting...</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Environment</span>
+                    <span class="info-value" style="color: var(--accent);">Local Server</span>
+                </div>
+                
+                <div class="toggle-container">
+                    <div>
+                        <span class="info-value" style="font-size: 0.95rem;">Inject Context</span>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Use sample.txt knowledge</p>
+                    </div>
+                    <label class="switch" aria-label="Toggle Context Injection">
+                        <input type="checkbox" id="context-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">
+                    <i data-lucide="folder" style="width: 18px; color: var(--secondary);"></i>
+                    Workspace
+                </h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.75rem;">
+                    You are connected to a structured Python backend designed for LLM orchestration.
+                </p>
+                <div style="font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text-muted);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="terminal" style="width: 14px; color: var(--primary);"></i>
+                        <span>backend/main.py</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="brain" style="width: 14px; color: var(--secondary);"></i>
+                        <span>backend/agent.py</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="file-text" style="width: 14px; color: var(--accent);"></i>
+                        <span>data/sample.txt</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chat Area -->
+        <section class="chat-container" aria-label="Chat Area">
+            <div class="chat-header">
+                <div class="chat-title-group">
+                    <div class="chat-icon-wrapper">
+                        <i data-lucide="message-square" style="width: 18px; height: 18px;"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 1rem; font-weight: 600;">Workspace Agent</h2>
+                        <span class="chat-subtitle">Ready to orchestrate commands</span>
+                    </div>
+                </div>
+                <button class="status-badge" style="cursor: pointer; background: transparent;" onclick="clearChat()" aria-label="Clear Chat History">
+                    <i data-lucide="trash-2" style="width: 14px; color: var(--secondary);"></i>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Clear</span>
+                </button>
+            </div>
+
+            <!-- Messages Window -->
+            <div class="chat-messages" id="chat-messages-container">
+                <!-- Welcome Message -->
+                <div class="message assistant">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p><strong>Welcome to the GenAI Assistant!</strong></p>
+                        <p>I am initialized with a structured FastAPI backend and a clean UI. Ask me anything to test the local agent fallback or your configured API providers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading overlay / status bar -->
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input-field" class="chat-input" placeholder="Type a message to orchestrate..." onkeydown="handleKeyPress(event)" aria-label="Chat input message">
+                </div>
+                <button id="send-message-btn" class="send-btn" onclick="sendMessage()" aria-label="Send Message">
+                    <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const messagesContainer = document.getElementById("chat-messages-container");
+        const inputField = document.getElementById("user-input-field");
+        const sendBtn = document.getElementById("send-message-btn");
+        const statusDot = document.getElementById("system-status-dot");
+        const statusText = document.getElementById("system-status-text");
+        const providerText = document.getElementById("active-provider-val");
+        const contextToggle = document.getElementById("context-toggle");
+
+        const API_BASE = "";
+
+        // Check backend server status
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/api/status`);
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDot.classList.add("online");
+                    statusText.textContent = "Online";
+                    
+                    // Determine provider details
+                    const provs = [];
+                    if (data.configured_providers.gemini) provs.push("Gemini");
+                    if (data.configured_providers.openai) provs.push("OpenAI");
+                    
+                    if (provs.length > 0) {
+                        providerText.textContent = provs.join(" + ");
+                        providerText.style.color = "var(--accent)";
+                    } else {
+                        providerText.textContent = "Offline Fallback Agent";
+                        providerText.style.color = "var(--secondary)";
+                    }
+                } else {
+                    setOfflineState();
+                }
+            } catch (err) {
+                setOfflineState();
+            }
+        }
+
+        function setOfflineState() {
+            statusDot.classList.remove("online");
+            statusText.textContent = "Offline";
+            providerText.textContent = "None (Server Disconnected)";
+            providerText.style.color = "var(--text-dark)";
+        }
+
+        // Run status check instantly and periodically
+        checkServerStatus();
+        setInterval(checkServerStatus, 5000);
+
+        function handleKeyPress(e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        function clearChat() {
+            messagesContainer.innerHTML = `
+                <div class="message assistant">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>Chat cleared. Ready for your next command.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function sendMessage() {
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            // Render user message
+            renderMessage(text, "user");
+            inputField.value = "";
+            
+            // Render typing indicator
+            const loaderId = renderLoader();
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: text,
+                        use_context: contextToggle.checked
+                    })
+                });
+
+                removeLoader(loaderId);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderMessage(data.response, "assistant");
+                } else {
+                    const errData = await response.json();
+                    renderMessage(`⚠️ Error: ${errData.detail || "Unable to retrieve response."}`, "assistant");
+                }
+            } catch (err) {
+                removeLoader(loaderId);
+                renderMessage("⚠️ Network error. Make sure your local server is running by executing `python backend/main.py`.", "assistant");
+            }
+        }
+
+        function renderMessage(content, sender) {
+            const msgDiv = document.createElement("div");
+            msgDiv.className = `message ${sender}`;
+            
+            const avatar = sender === "user" ? "👤" : "🤖";
+            
+            // Format linebreaks and basic bold / code syntax for delightful display
+            const formattedContent = formatText(content);
+
+            msgDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${formattedContent}</div>
+            `;
+            
+            messagesContainer.appendChild(msgDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function renderLoader() {
+            const loaderId = "loader_" + Date.now();
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "message assistant";
+            msgDiv.id = loaderId;
+            
+            msgDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(msgDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return loaderId;
+        }
+
+        function removeLoader(id) {
+            const loader = document.getElementById(id);
+            if (loader) {
+                loader.remove();
+            }
+        }
+
+        // Extremely simple formatting parser for markdown blocks
+        function formatText(text) {
+            let html = text;
+            
+            // Replace escaped HTML tags
+            html = html.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            
+            // Code blocks
+            html = html.replace(/```([\s\S]*?)```/g, (match, code) => {
+                return `<pre><code>${code.trim()}</code></pre>`;
+            });
+            
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+            
+            // Bold text
+            html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+            html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+            
+            // Newlines
+            html = html.split("\n").map(para => {
+                if (para.startsWith("<pre>") || para.endsWith("</pre>")) return para;
+                return `<p>${para}</p>`;
+            }).join("");
+
+            return html;
+        }
+    </script>
+</body>
+</html>

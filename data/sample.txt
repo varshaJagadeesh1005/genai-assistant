@@ -1,0 +1,10 @@
+Welcome to the GenAI Assistant Knowledge Base!
+
+This is a sample text file used to test retrieval-augmented generation (RAG) or document parsing capabilities.
+You can add any custom context here, such as company policies, product FAQs, or technical documentation.
+
+Key Information:
+- Project Name: GenAI Assistant
+- Developer: varshaJagadeesh1005
+- Goal: To build a robust, production-grade agentic AI assistant.
+- Stack: FastAPI (Python), Vanilla HTML5/CSS3 (Frontend), and state-of-the-art LLMs (Gemini/OpenAI).
