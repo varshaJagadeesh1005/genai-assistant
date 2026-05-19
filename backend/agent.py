@@ -10,7 +10,7 @@ load_dotenv()
 
 class GenAIAgent:
     def __init__(self):
-        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        self.gemini_api_key = os.getenv("GOOGLE_API_KEY")
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
         
         # Configure Gemini if key is provided
@@ -77,5 +77,5 @@ class GenAIAgent:
                 "🤖 **Offline Mode Active**\n\n"
                 "I received your query: *" + query + "*\n\n"
                 "To get real generative answers, please edit the `.env` file in the root directory "
-                "and replace the placeholder with a valid API key (e.g., `GEMINI_API_KEY`)."
+                "and replace the placeholder with a valid API key (e.g., `GOOGLE_API_KEY`)."
             )

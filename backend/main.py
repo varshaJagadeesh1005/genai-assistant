@@ -42,7 +42,7 @@ class ChatResponse(BaseModel):
 @app.get("/api/status")
 async def get_status():
     """Retrieve backend server and configuration status."""
-    has_gemini = bool(os.getenv("GEMINI_API_KEY") and "your_gemini_api_key" not in os.getenv("GEMINI_API_KEY"))
+    has_gemini = bool(os.getenv("GOOGLE_API_KEY"))
     has_openai = bool(os.getenv("OPENAI_API_KEY") and "your_openai_api_key" not in os.getenv("OPENAI_API_KEY"))
     return {
         "status": "online",
